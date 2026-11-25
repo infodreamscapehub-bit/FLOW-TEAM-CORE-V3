@@ -74,16 +74,14 @@ jobs:
         if: failure()
         shell: bash
         run: |
-          # javac errors: "<path>.java:<line>: error: <msg>" + following detail lines
-          grep -n -E '\.java:[0-9]+: error:' build.log | head -n 25 | while IFS= read -r hit; do
-            n=${hit%%:*}; line=${hit#*:}
-            detail=$(sed -n "$((n+1)),$((n+3))p" build.log | tr '\n' ' ' | tr -s ' ')
-            echo "::error title=javac::${line#*/FLOW-TEAM-CORE-V3/} | ${detail}"
-          done
-          # test failures, Gradle "What went wrong" and other exceptions
-          grep -E 'FAILED|What went wrong|Exception|expected:' -A3 build.log | head -n 40 | tr '\n' ' ' | fold -w 900 | head -n 5 | while IFS= read -r chunk; do
-            echo "::error title=gradle::${chunk}"
-          done
+          set +e +o pipefail
+          if [ ! -f build.log ]; then echo "::error::build.log missing"; exit 1; fi
+          # up to 10 error annotations: javac errors, failed tasks/tests, assertion and exception lines
+          grep -E '\.java:[0-9]+: error:|FAILED|expected: <|Exception|What went wrong|> Task .*FAILED' build.log \
+            | grep -v 'Deprecated Gradle' | head -n 10 | sed 's/%/%25/g; s/\r//g' \
+            | while IFS= read -r l; do echo "::error::${l#*/FLOW-TEAM-CORE-V3/}"; done
+          # up to 10 warning annotations: the last lines of the build output
+          tail -n 10 build.log | sed 's/%/%25/g; s/\r//g' | while IFS= read -r l; do echo "::warning::${l}"; done
           exit 1
 
       - name: Failure summary
