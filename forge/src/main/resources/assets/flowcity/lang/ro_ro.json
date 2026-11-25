@@ -1,0 +1,20 @@
+{
+  "key.categories.flowcity": "FlowCity Roleplay",
+  "key.flowcity.show_ids": "Arata ID-urile din jur (tine apasat)",
+  "key.flowcity.id_search": "Cautare ID",
+  "key.flowcity.profile": "Profilul meu",
+  "screen.flowcity.id_search": "CAUTARE ID",
+  "screen.flowcity.enter_id": "Introdu un ID RP",
+  "screen.flowcity.search": "Cauta",
+  "screen.flowcity.close": "Inchide",
+  "screen.flowcity.invalid_id": "Introdu un numar mai mare decat 0.",
+  "screen.flowcity.profile": "PROFIL",
+  "screen.flowcity.name": "Nume",
+  "screen.flowcity.playtime": "Timp jucat",
+  "screen.flowcity.status": "Status",
+  "screen.flowcity.online": "Online",
+  "screen.flowcity.offline": "Offline",
+  "screen.flowcity.first_join": "Prima intrare",
+  "screen.flowcity.last_seen": "Vazut ultima data",
+  "screen.flowcity.account": "Cont"
+}

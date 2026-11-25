@@ -73,6 +73,58 @@ class ProtocolCodecTest {
     }
 
     @Test
+    void nearbyIdsRoundTrip() throws Exception {
+        java.util.List<com.flowcity.common.protocol.packets.NearbyIdsPacket.Entry> list = new java.util.ArrayList<>();
+        list.add(new com.flowcity.common.protocol.packets.NearbyIdsPacket.Entry(12, "007", 0xFFFFA500));
+        list.add(new com.flowcity.common.protocol.packets.NearbyIdsPacket.Entry(99, "1024", 0xFFFFFFFF));
+        byte[] bytes = new com.flowcity.common.protocol.packets.NearbyIdsPacket(list).encode();
+        FlowPacketReader r = FlowPacketReader.open(bytes, Protocol.MAX_CLIENTBOUND_BYTES);
+        assertEquals(PacketIds.CB_NEARBY_IDS, r.packetId());
+        com.flowcity.common.protocol.packets.NearbyIdsPacket p = com.flowcity.common.protocol.packets.NearbyIdsPacket.decode(r);
+        assertEquals(2, p.entries.size());
+        assertEquals(12, p.entries.get(0).entityId);
+        assertEquals("007", p.entries.get(0).label);
+        assertEquals(0xFFFFA500, p.entries.get(0).color);
+        assertEquals("1024", p.entries.get(1).label);
+    }
+
+    @Test
+    void profileRoundTripFoundAndNotFound() throws Exception {
+        com.flowcity.common.protocol.packets.ProfilePacket in = new com.flowcity.common.protocol.packets.ProfilePacket(
+                7, "007", "Fabian", "ADMIN", 0xFFFF5555, 7200L, true, 1L, 2L, "", "");
+        FlowPacketReader r = FlowPacketReader.open(in.encode(), Protocol.MAX_CLIENTBOUND_BYTES);
+        com.flowcity.common.protocol.packets.ProfilePacket out = com.flowcity.common.protocol.packets.ProfilePacket.decode(r);
+        assertTrue(out.found);
+        assertEquals(7, out.rpId);
+        assertEquals("ADMIN", out.rankName);
+        assertEquals(7200L, out.playtimeSeconds);
+
+        FlowPacketReader r2 = FlowPacketReader.open(
+                com.flowcity.common.protocol.packets.ProfilePacket.notFound("Nu exista").encode(), 1024);
+        com.flowcity.common.protocol.packets.ProfilePacket nf = com.flowcity.common.protocol.packets.ProfilePacket.decode(r2);
+        assertFalse(nf.found);
+        assertEquals("Nu exista", nf.error);
+    }
+
+    @Test
+    void playerStateAndRequestRoundTrip() throws Exception {
+        com.flowcity.common.protocol.packets.PlayerStatePacket s = new com.flowcity.common.protocol.packets.PlayerStatePacket(
+                7, "007", "Fabian", "ADMIN", 0xFFFF5555, "admin", 3600L);
+        com.flowcity.common.protocol.packets.PlayerStatePacket s2 = com.flowcity.common.protocol.packets.PlayerStatePacket.decode(
+                FlowPacketReader.open(s.encode(), Protocol.MAX_CLIENTBOUND_BYTES));
+        assertEquals("Fabian", s2.displayName);
+        assertEquals(3600L, s2.playtimeSeconds);
+
+        com.flowcity.common.protocol.packets.ProfileRequestPacket q = com.flowcity.common.protocol.packets.ProfileRequestPacket.decode(
+                FlowPacketReader.open(new com.flowcity.common.protocol.packets.ProfileRequestPacket(42).encode(), Protocol.MAX_SERVERBOUND_BYTES));
+        assertEquals(42, q.rpId);
+
+        byte[] negative = FlowPacketWriter.create(PacketIds.SB_PROFILE_REQUEST).writeVarInt(-5).toByteArray();
+        assertThrows(ProtocolException.class, () -> com.flowcity.common.protocol.packets.ProfileRequestPacket.decode(
+                FlowPacketReader.open(negative, 1024)));
+    }
+
+    @Test
     void rejectsHugeStringLength() throws Exception {
         byte[] bytes = FlowPacketWriter.create(1).writeVarInt(Integer.MAX_VALUE).toByteArray();
         FlowPacketReader r = FlowPacketReader.open(bytes, 1024);

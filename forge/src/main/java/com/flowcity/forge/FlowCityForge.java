@@ -1,6 +1,6 @@
 package com.flowcity.forge;
 
-import com.flowcity.forge.client.ClientNetwork;
+import com.flowcity.forge.client.ClientEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
@@ -20,7 +20,7 @@ public final class FlowCityForge {
         // On the Arclight server the same channel name is owned by the FlowCityCore Bukkit plugin
         // (plugin messaging). If the server half of this mod registered it too, Forge would consume
         // the payloads before Bukkit sees them.
-        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> ClientNetwork::init);
+        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> ClientEvents::init);
     }
 
     public static String version() {

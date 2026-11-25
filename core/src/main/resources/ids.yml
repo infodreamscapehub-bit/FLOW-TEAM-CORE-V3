@@ -1,0 +1,46 @@
+# FLOWCITY ROLEPLAY - permanent RP ID system
+
+config-version: 1
+
+ids:
+  # First ID handed out on a fresh database.
+  start-id: 1
+  # Highest allowed ID (also the upper limit for /setid).
+  max-id: 99999
+  # false = an ID that was ever assigned is never given to anyone else again (recommended).
+  allow-reuse: false
+  # Allow /resetid (gives a player a brand-new ID from the counter).
+  allow-reset: true
+  # How IDs are shown: Java String.format pattern. "%03d" -> 007, "%d" -> 7.
+  display-format: "%03d"
+
+nametags:
+  # Hide vanilla name tags above players (the tab list stays normal).
+  hide-vanilla: true
+  # Server-side fallback for clients without the FlowCity mod: a scoreboard team with
+  # name tag visibility "never". Disable if another plugin (e.g. TAB) manages teams; then set
+  # that plugin's name tags to hidden instead.
+  use-scoreboard-team: true
+  team-name: "fc_hidden"
+
+nearby:
+  # How far away (blocks) other players' IDs are sent to a FlowCity client.
+  render-distance: 16
+  # How often the server refreshes the list (ticks, 20 = 1 second).
+  update-interval-ticks: 10
+  # Never send IDs of players in spectator mode or with the invisibility effect.
+  hide-spectators: true
+  hide-invisible: true
+  # ARGB colours (hex). Staff colour is used for players with flowcity.id.staffcolor.
+  color: "FFFFFFFF"
+  staff-color: "FFFFAA00"
+
+profile:
+  # Seconds between two profile lookups by the same player (F6 / F7 / /viewid).
+  cooldown-seconds: 1
+  # Date format for first join / last seen.
+  date-format: "dd.MM.yyyy HH:mm"
+
+playtime:
+  # Save playtime of online players every N minutes (also saved on quit and shutdown).
+  save-interval-minutes: 5

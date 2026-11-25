@@ -1,0 +1,54 @@
+# FLOWCITY ROLEPLAY - player-facing messages
+# Colour codes use &. Placeholders are written as {name}.
+
+config-version: 1
+
+prefix: "&6&lFLOWCITY &8| &r"
+
+general:
+  no-permission: "&cNu ai permisiunea pentru asta."
+  players-only: "&cComanda poate fi folosita doar in joc."
+  player-not-found: "&cJucatorul &f{target} &cnu a fost gasit."
+  database-error: "&cEroare la baza de date. Incearca din nou peste cateva secunde."
+  login-database-error: "FlowCity: baza de date nu raspunde. Incearca din nou in cateva secunde."
+  reloaded: "&aConfiguratia a fost reincarcata."
+  cooldown: "&cAsteapta putin inainte sa folosesti din nou."
+
+id:
+  own: "&eID-ul tau RP este &6&l{id}&e."
+  other: "&eJucatorul &f{target} &eare ID-ul RP &6&l{id}&e."
+  set-success: "&aID-ul lui &f{target} &aa fost schimbat din &6{old} &ain &6{new}&a."
+  set-notify: "&eID-ul tau RP a fost schimbat in &6&l{new}&e de un administrator."
+  reset-success: "&aJucatorul &f{target} &aa primit un ID nou: &6{new} &7(vechiul: {old})&a."
+  reset-disabled: "&cResetarea ID-urilor este dezactivata in ids.yml."
+  usage-set: "&eFolosire: &f/setid <jucator> <id> [motiv]"
+  usage-reset: "&eFolosire: &f/resetid <jucator> [motiv]"
+  usage-view: "&eFolosire: &f/viewid <id> &7sau &f/viewid"
+  not-a-number: "&c&f{value} &cnu este un ID valid."
+  visibility-on: "&aID-urile din jur sunt acum afisate permanent."
+  visibility-off: "&eID-urile din jur se afiseaza doar cat tii apasat &6ALT&e."
+  visibility-needs-mod: "&cAi nevoie de mod-ul FlowCity pentru a vedea ID-urile."
+  list-title: "&8ID-uri jucatori online"
+  list-entry-name: "&6ID {id} &8| &f{name}"
+  list-entry-rank: "&7Rang: {rank}"
+  list-entry-username: "&8Cont: {username}"
+  list-entry-click: "&eClick pentru profil"
+  list-previous: "&ePagina anterioara"
+  list-next: "&ePagina urmatoare"
+  profile-header: "&8&m          &r &6&lPROFIL &6ID {id} &8&m          "
+  profile-name: "&7Nume: &f{name}"
+  profile-rank: "&7Rang: {rank}"
+  profile-playtime: "&7Timp jucat: &f{playtime}"
+  profile-status-online: "&7Status: &aOnline"
+  profile-status-offline: "&7Status: &cOffline &8(vazut ultima data {lastseen})"
+  profile-first-join: "&7Prima intrare: &f{firstjoin}"
+  profile-username: "&7Cont Minecraft: &f{username}"
+  profile-uuid: "&7UUID: &f{uuid}"
+  profile-not-found: "Nu exista niciun jucator cu ID-ul {id}."
+  error:
+    player-not-found: "&cJucatorul nu exista in baza de date FlowCity."
+    out-of-range: "&cID-ul trebuie sa fie intre 1 si {max}."
+    taken: "&cID-ul {id} este deja folosit de alt jucator."
+    retired: "&cID-ul {id} a fost folosit inainte si nu mai poate fi refolosit (vezi ids.yml: allow-reuse)."
+    same: "&cJucatorul are deja ID-ul {id}."
+    exhausted: "&cNu mai exista ID-uri libere (ids.yml: max-id)."

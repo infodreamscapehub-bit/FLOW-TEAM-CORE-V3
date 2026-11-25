@@ -1,3 +1,4 @@
 # <version>:<name>  -> db/<dialect>/V<version>__<name>.sql
 # Never edit or renumber a migration that has shipped; add a new one instead.
 1:core
+2:id_history_indexes

@@ -40,6 +40,7 @@ public final class FlowCityCommand implements TabExecutor {
         line(sender, "Database", plugin.database().dialect().id() + ", schema v" + plugin.database().schemaVersion());
         line(sender, "Pool", plugin.database().poolStats());
         line(sender, "Forge bridge", plugin.bridgeProbe().summary());
+        line(sender, "Ranks", plugin.ranks().describe());
 
         List<Player> players = new ArrayList<>(plugin.getServer().getOnlinePlayers());
         line(sender, "Clients", players.isEmpty() ? "no players online" : players.size() + " online");

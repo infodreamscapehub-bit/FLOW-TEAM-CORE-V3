@@ -12,8 +12,54 @@ commands:
     usage: /<command> status
     aliases: [fc]
     permission: flowcity.admin.status
+  id:
+    description: Show your RP ID, or another player's
+    usage: /<command> [player]
+    permission: flowcity.id
+  listid:
+    description: Online players with their RP IDs
+    usage: /<command>
+    permission: flowcity.id.list
+  viewid:
+    description: Open a profile by RP ID, or toggle nearby ID visibility
+    usage: /<command> [id]
+    permission: flowcity.id.view
+  setid:
+    description: Change a player's RP ID
+    usage: /<command> <player> <id> [reason]
+    permission: flowcity.id.admin
+  resetid:
+    description: Give a player a new RP ID
+    usage: /<command> <player> [reason]
+    permission: flowcity.id.admin
+  idreload:
+    description: Reload ids.yml, ranks.yml and messages.yml
+    usage: /<command>
+    permission: flowcity.id.admin
 
 permissions:
   flowcity.admin.status:
     description: View FlowCity technical status (database, protocol)
     default: op
+  flowcity.id:
+    description: See your own RP ID and nearby IDs (LEFT ALT)
+    default: true
+  flowcity.id.lookup:
+    description: /id <player>
+    default: op
+  flowcity.id.list:
+    description: /listid
+    default: op
+  flowcity.id.view:
+    description: Open other players' profiles (/viewid, F6) and toggle nearby IDs
+    default: true
+  flowcity.id.staffcolor:
+    description: Your RP ID is drawn in the staff colour
+    default: false
+  flowcity.id.admin:
+    description: /setid, /resetid, /idreload and staff-only profile fields
+    default: op
+    children:
+      flowcity.id.lookup: true
+      flowcity.id.list: true
+      flowcity.id.view: true

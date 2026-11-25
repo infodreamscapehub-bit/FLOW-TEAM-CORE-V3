@@ -17,11 +17,15 @@ repositories {
     maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
     maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
     maven { url = 'https://oss.sonatype.org/content/repositories/central' }
+    maven { url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
 }
 
 dependencies {
     // Spigot API only (no Paper API): this is what Arclight 1.16.5 exposes.
     compileOnly "org.spigotmc:spigot-api:${project.spigot_api_version}"
+    // Optional integrations: only touched when the plugin is installed on the server.
+    compileOnly 'net.luckperms:api:5.4'
+    compileOnly 'me.clip:placeholderapi:2.11.6'
 
     // Shaded + relocated so they can never clash with jars Arclight or other plugins ship.
     implementation 'com.zaxxer:HikariCP:4.0.3'

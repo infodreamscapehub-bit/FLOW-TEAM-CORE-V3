@@ -18,7 +18,10 @@ import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
 import java.security.SecureRandom;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Consumer;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -75,6 +78,8 @@ public final class ClientConnectionService implements Listener, PluginMessageLis
     private final boolean debug;
     private final SecureRandom random = new SecureRandom();
     private final Map<UUID, Session> sessions = new ConcurrentHashMap<>();
+    private final Map<Integer, PacketHandler> handlers = new ConcurrentHashMap<>();
+    private final List<Consumer<Player>> readyListeners = new CopyOnWriteArrayList<>();
 
     public ClientConnectionService(JavaPlugin plugin, int helloDelayTicks, int helloTimeoutTicks,
                                    int maxPacketsPerSecond, boolean debug) {
@@ -169,8 +174,16 @@ public final class ClientConnectionService implements Listener, PluginMessageLis
                 case PacketIds.SB_HELLO_ACK:
                     handleHelloAck(player, session, HelloAckPacket.decode(reader));
                     break;
-                default:
-                    debugDrop(player, "unknown packet id " + reader.packetId());
+                default: {
+                    PacketHandler handler = handlers.get(reader.packetId());
+                    if (handler == null) {
+                        debugDrop(player, "unknown packet id " + reader.packetId());
+                    } else if (session.state != State.CONFIRMED) {
+                        debugDrop(player, "packet " + reader.packetId() + " before handshake completed");
+                    } else {
+                        handler.handle(player, reader);
+                    }
+                }
             }
         } catch (ProtocolException e) {
             if (session.state == State.PENDING) {
@@ -197,6 +210,47 @@ public final class ClientConnectionService implements Listener, PluginMessageLis
         session.detail = "ok";
         plugin.getLogger().info("[protocol] " + player.getName() + ": FlowCity client confirmed (FlowCityForge "
                 + ack.modVersion + ", protocol " + Protocol.VERSION + ")");
+        for (Consumer<Player> l : readyListeners) {
+            try {
+                l.accept(player);
+            } catch (RuntimeException e) {
+                plugin.getLogger().log(java.util.logging.Level.SEVERE, "Client-ready listener failed", e);
+            }
+        }
+    }
+
+    /** Handles one serverbound packet type; only called for CONFIRMED clients, on the main thread. */
+    @FunctionalInterface
+    public interface PacketHandler {
+        void handle(Player player, FlowPacketReader reader) throws ProtocolException;
+    }
+
+    public void registerHandler(int packetId, PacketHandler handler) {
+        if (packetId == PacketIds.SB_HELLO_ACK || handlers.putIfAbsent(packetId, handler) != null) {
+            throw new IllegalStateException("Handler already registered for packet " + packetId);
+        }
+    }
+
+    /** Runs when a player's client completes the handshake (main thread). */
+    public void onClientReady(Consumer<Player> listener) {
+        readyListeners.add(listener);
+    }
+
+    public boolean isConfirmed(Player player) {
+        Session s = sessions.get(player.getUniqueId());
+        return s != null && s.state == State.CONFIRMED;
+    }
+
+    /** Sends a FlowCity payload; silently skipped for players without a confirmed FlowCity client. */
+    public boolean send(Player player, byte[] payload) {
+        if (!isConfirmed(player)) {
+            return false;
+        }
+        if (payload.length > Protocol.MAX_CLIENTBOUND_BYTES) {
+            throw new IllegalArgumentException("Payload too large: " + payload.length);
+        }
+        player.sendPluginMessage(plugin, Protocol.CHANNEL, payload);
+        return true;
     }
 
     /** Fixed one-second window per player. Called only from the main thread. */

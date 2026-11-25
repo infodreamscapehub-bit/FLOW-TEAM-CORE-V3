@@ -6,6 +6,11 @@ import com.flowcity.common.protocol.Protocol;
 import com.flowcity.common.protocol.ProtocolException;
 import com.flowcity.common.protocol.packets.HelloAckPacket;
 import com.flowcity.common.protocol.packets.HelloPacket;
+import com.flowcity.common.protocol.packets.IdVisibilityPacket;
+import com.flowcity.common.protocol.packets.NearbyIdsPacket;
+import com.flowcity.common.protocol.packets.PlayerStatePacket;
+import com.flowcity.common.protocol.packets.ProfilePacket;
+import com.flowcity.forge.client.screen.ProfileScreen;
 import com.flowcity.forge.FlowCityForge;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
@@ -67,6 +72,20 @@ public final class ClientNetwork {
                     HelloPacket hello = HelloPacket.decode(reader);
                     FlowCityForge.LOGGER.info("FlowCity server hello (server {}), answering", hello.serverVersion);
                     send(new HelloAckPacket(hello.nonce, FlowCityForge.version()).encode());
+                    break;
+                }
+                case PacketIds.CB_NEARBY_IDS:
+                    ClientState.setNearby(NearbyIdsPacket.decode(reader));
+                    break;
+                case PacketIds.CB_ID_VISIBILITY:
+                    ClientState.setAlwaysShowIds(IdVisibilityPacket.decode(reader).alwaysShow);
+                    break;
+                case PacketIds.CB_PLAYER_STATE:
+                    ClientState.setSelf(PlayerStatePacket.decode(reader));
+                    break;
+                case PacketIds.CB_PROFILE: {
+                    ProfilePacket profile = ProfilePacket.decode(reader);
+                    Minecraft.getInstance().setScreen(new ProfileScreen(profile));
                     break;
                 }
                 default:

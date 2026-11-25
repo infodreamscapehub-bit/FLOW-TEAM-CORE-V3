@@ -1,0 +1,52 @@
+# FLOWCITY ROLEPLAY - rank display, read from LuckPerms
+# Ranks are NOT stored by FlowCity: LuckPerms is the only source of truth.
+# This file only says how a LuckPerms group is shown (name, colour, icon).
+
+config-version: 1
+
+# primary-group: use the LuckPerms primary group.
+# highest-priority: use the inherited group with the highest "priority" below.
+mode: highest-priority
+
+# Used when the player's group is not listed below (or LuckPerms is missing).
+fallback:
+  display: "CIVIL"
+  color: "FFBBBBBB"
+  icon: "civil"
+
+groups:
+  default:
+    display: "CIVIL"
+    color: "FFBBBBBB"
+    icon: "civil"
+    priority: 0
+  helper:
+    display: "HELPER"
+    color: "FF55FFFF"
+    icon: "helper"
+    priority: 10
+  moderator:
+    display: "MODERATOR"
+    color: "FF5555FF"
+    icon: "moderator"
+    priority: 20
+  admin:
+    display: "ADMIN"
+    color: "FFFF5555"
+    icon: "admin"
+    priority: 30
+  manager:
+    display: "MANAGER"
+    color: "FFFFAA00"
+    icon: "manager"
+    priority: 40
+  developer:
+    display: "DEVELOPER"
+    color: "FFAA00AA"
+    icon: "developer"
+    priority: 50
+  owner:
+    display: "OWNER"
+    color: "FFAA0000"
+    icon: "owner"
+    priority: 60

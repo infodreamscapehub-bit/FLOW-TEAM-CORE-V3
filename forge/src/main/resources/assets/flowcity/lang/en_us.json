@@ -1,0 +1,20 @@
+{
+  "key.categories.flowcity": "FlowCity Roleplay",
+  "key.flowcity.show_ids": "Show nearby IDs (hold)",
+  "key.flowcity.id_search": "ID search",
+  "key.flowcity.profile": "My profile",
+  "screen.flowcity.id_search": "ID SEARCH",
+  "screen.flowcity.enter_id": "Enter an RP ID",
+  "screen.flowcity.search": "Search",
+  "screen.flowcity.close": "Close",
+  "screen.flowcity.invalid_id": "Enter a number greater than 0.",
+  "screen.flowcity.profile": "PROFILE",
+  "screen.flowcity.name": "Name",
+  "screen.flowcity.playtime": "Playtime",
+  "screen.flowcity.status": "Status",
+  "screen.flowcity.online": "Online",
+  "screen.flowcity.offline": "Offline",
+  "screen.flowcity.first_join": "First join",
+  "screen.flowcity.last_seen": "Last seen",
+  "screen.flowcity.account": "Account"
+}

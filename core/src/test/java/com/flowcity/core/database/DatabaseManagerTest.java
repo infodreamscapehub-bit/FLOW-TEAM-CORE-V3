@@ -34,7 +34,7 @@ class DatabaseManagerTest {
     void freshDatabaseIsMigratedToLatest(@TempDir Path dir) throws Exception {
         DatabaseManager db = open(dir.resolve("flowcity.db").toFile());
         try {
-            assertEquals(1, db.schemaVersion());
+            assertEquals(2, db.schemaVersion());
             long next = db.query(c -> {
                 try (Statement st = c.createStatement();
                      ResultSet rs = st.executeQuery("SELECT next_value FROM fc_counters WHERE name='rp_id'")) {
@@ -68,7 +68,7 @@ class DatabaseManagerTest {
 
         DatabaseManager again = open(file);
         try {
-            assertEquals(1, again.schemaVersion());
+            assertEquals(2, again.schemaVersion());
             String name = again.query(c -> {
                 try (Statement st = c.createStatement();
                      ResultSet rs = st.executeQuery("SELECT last_name FROM fc_players WHERE rp_id = 7")) {
