@@ -17,6 +17,14 @@
 | Forge bridge probe | `ForgeBridgeProbe` (core) + `ServerBridge` (forge) | checks whether the plugin can call mod classes on Arclight |
 | Status command | `/flowcity status` (`flowcity.admin.status`) | version, DB, pool, bridge probe, per-player client state |
 
+## Verified on GitHub Actions (run #4, commit 1e7a671)
+
+* Whole project compiles (JDK 8, Gradle 7.6.4, ForgeGradle 5.1, Forge 36.2.39 official mappings).
+* All unit tests pass: 8 protocol tests (common), 5 database tests (core, real SQLite).
+* `FlowCityForge-1.16.5-0.1.0.jar`: 14 KB, 10 classes, `mods.toml` present, reobfuscated.
+* `FlowCityCore-1.16.5-0.1.0.jar`: 2.7 MB (HikariCP + MySQL Connector/J relocated), `plugin.yml` present.
+* Fixed on the way: HikariCP needs slf4j on the test classpath (Arclight provides it at runtime).
+
 ## Not verified yet (needs a real Arclight server + client)
 
 1. Server boots with FlowCityCore + FlowCityForge on Arclight 1.0.25 (Java 11 and 17).
