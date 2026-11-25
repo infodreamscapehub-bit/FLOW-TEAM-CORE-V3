@@ -99,10 +99,21 @@ jobs:
           name: test-reports
           path: '**/build/reports/tests/'
 
+      # The jars are also packed into one zip: some download clients refuse bare .jar files.
+      - name: Pack zip
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        run: |
+          mkdir -p pack/plugins pack/mods
+          cp core/build/libs/FlowCityCore-*.jar pack/plugins/
+          cp forge/build/libs/FlowCityForge-*.jar pack/mods/
+          (cd pack && zip -r "../FlowCity-${GITHUB_REF_NAME}.zip" plugins mods)
+
       - name: Release
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
           files: |
+            FlowCity-*.zip
             core/build/libs/FlowCityCore-*.jar
             forge/build/libs/FlowCityForge-*.jar
