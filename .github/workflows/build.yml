@@ -69,6 +69,23 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
       # Logs need a GitHub login; the run summary is visible on the run page itself.
+      # Annotations are public on the run page (logs need a GitHub login).
+      - name: Failure annotations
+        if: failure()
+        shell: bash
+        run: |
+          # javac errors: "<path>.java:<line>: error: <msg>" + following detail lines
+          grep -n -E '\.java:[0-9]+: error:' build.log | head -n 25 | while IFS= read -r hit; do
+            n=${hit%%:*}; line=${hit#*:}
+            detail=$(sed -n "$((n+1)),$((n+3))p" build.log | tr '\n' ' ' | tr -s ' ')
+            echo "::error title=javac::${line#*/FLOW-TEAM-CORE-V3/} | ${detail}"
+          done
+          # test failures, Gradle "What went wrong" and other exceptions
+          grep -E 'FAILED|What went wrong|Exception|expected:' -A3 build.log | head -n 40 | tr '\n' ' ' | fold -w 900 | head -n 5 | while IFS= read -r chunk; do
+            echo "::error title=gradle::${chunk}"
+          done
+          exit 1
+
       - name: Failure summary
         if: failure()
         shell: bash
