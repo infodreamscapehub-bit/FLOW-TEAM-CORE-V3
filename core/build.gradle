@@ -35,10 +35,17 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.3'
     testImplementation 'org.xerial:sqlite-jdbc:3.34.0'
+    // HikariCP needs slf4j. Arclight provides it at runtime; tests need their own copy.
+    testRuntimeOnly 'org.slf4j:slf4j-api:1.7.36'
+    testRuntimeOnly 'org.slf4j:slf4j-nop:1.7.36'
 }
 
 test {
     useJUnitPlatform()
+    testLogging {
+        events 'failed'
+        exceptionFormat 'full'
+    }
 }
 
 processResources {

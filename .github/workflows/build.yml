@@ -14,10 +14,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       # Forge 1.16.5 toolchain (ForgeGradle 5 / MCP 1.16.5) is built and tested for Java 8.
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '8'
@@ -27,7 +27,24 @@ jobs:
           gradle-version: '7.6.4'
 
       - name: Build and test
-        run: gradle build --stacktrace
+        shell: bash
+        run: |
+          set -o pipefail
+          gradle build --continue 2>&1 | tee build.log
+
+      # Logs need a GitHub login; the run summary is visible on the run page itself.
+      - name: Failure summary
+        if: failure()
+        shell: bash
+        run: |
+          {
+            echo '## Build failed - relevant output'
+            echo '```'
+            grep -n -E 'FAILED|error:|What went wrong|Exception|expected:|Caused by|> Task .* FAILED|warning: \[' build.log | head -n 120
+            echo '--- last 60 lines ---'
+            tail -n 60 build.log
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload jars
         uses: actions/upload-artifact@v4
