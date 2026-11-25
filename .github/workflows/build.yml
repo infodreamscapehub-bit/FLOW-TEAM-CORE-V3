@@ -32,6 +32,21 @@ jobs:
           set -o pipefail
           gradle build --continue 2>&1 | tee build.log
 
+      # Annotations are visible on the run page even without a GitHub login.
+      - name: Verify jars
+        shell: bash
+        run: |
+          ok=1
+          for pattern in 'core/build/libs/FlowCityCore-*.jar' 'forge/build/libs/FlowCityForge-*.jar'; do
+            f=$(ls $pattern 2>/dev/null | head -n 1)
+            if [ -z "$f" ]; then
+              echo "::error title=Missing jar::$pattern was not built"; ok=0; continue
+            fi
+            classes=$(unzip -l "$f" | grep -c '\.class$')
+            echo "::notice title=Built $(basename "$f")::$(stat -c %s "$f") bytes, $classes classes, mods.toml=$(unzip -l "$f" | grep -c 'META-INF/mods.toml'), plugin.yml=$(unzip -l "$f" | grep -c ' plugin.yml$')"
+          done
+          [ "$ok" = 1 ]
+
       - name: Jar summary
         shell: bash
         run: |
