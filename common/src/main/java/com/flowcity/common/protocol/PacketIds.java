@@ -19,8 +19,16 @@ public final class PacketIds {
     /** CB: the receiver's own state for the HUD (ID, name, rank, playtime). */
     public static final int CB_PLAYER_STATE = 0x05;
 
+    // --- HUD (Phase 3) ---
+    /** CB: the receiver's cash / bank balance. */
+    public static final int CB_MONEY_STATE = 0x06;
+    /** CB: the receiver's saved HUD presets and active slot. */
+    public static final int CB_HUD_CONFIG = 0x07;
+
     /** SB: client asks for a profile by RP ID (0 = own profile). */
     public static final int SB_PROFILE_REQUEST = 0x11;
+    /** SB: client saves a HUD layout into a preset slot (and activates it). */
+    public static final int SB_HUD_SAVE = 0x12;
 
     private PacketIds() {
     }

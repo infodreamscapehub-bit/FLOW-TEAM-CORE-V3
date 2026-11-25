@@ -8,6 +8,8 @@ import com.flowcity.core.config.ConfigFiles;
 import com.flowcity.core.database.DatabaseManager;
 import com.flowcity.core.database.DatabaseSettingsLoader;
 import com.flowcity.core.gui.MenuListener;
+import com.flowcity.core.hud.HudConfigService;
+import com.flowcity.core.hud.MoneyService;
 import com.flowcity.core.id.IdCommands;
 import com.flowcity.core.id.IdSettings;
 import com.flowcity.core.id.NametagService;
@@ -55,6 +57,9 @@ public final class FlowCityCore extends JavaPlugin implements Listener {
     private NearbyIdService nearby;
     private NametagService nametags;
     private FlowCityExpansion expansion;
+    private HudConfigService hudConfig;
+    private MoneyService money;
+    private volatile int hudSaveCooldownSeconds = 2;
 
     @Override
     public void onEnable() {
@@ -100,9 +105,18 @@ public final class FlowCityCore extends JavaPlugin implements Listener {
         nametags = new NametagService(this, idSettings::get);
         AdminLog adminLog = new AdminLog(database, getLogger());
 
+        YamlConfiguration hudYml = files.load("hud.yml");
+        hudSaveCooldownSeconds = Math.max(0, hudYml.getInt("hud.save-cooldown-seconds", 2));
+        money = new MoneyService(this, connections);
+        money.configure(hudYml);
+        hudConfig = new HudConfigService(this, database, connections, messages, () -> hudSaveCooldownSeconds);
+        hudConfig.register();
+
         // Wiring: who reacts to what.
         connections.onClientReady(p -> {
             hud.push(p);
+            money.push(p, true);
+            hudConfig.sendTo(p);
             nearby.onClientReady(p);
         });
         connections.registerHandler(PacketIds.SB_PROFILE_REQUEST,
@@ -119,6 +133,7 @@ public final class FlowCityCore extends JavaPlugin implements Listener {
         connections.register();
         nametags.apply();
         nearby.start();
+        money.start();
         getServer().getPluginManager().registerEvents(new MenuListener(), this);
         getServer().getPluginManager().registerEvents(this, this);
 
@@ -140,6 +155,9 @@ public final class FlowCityCore extends JavaPlugin implements Listener {
         }
         if (nearby != null) {
             nearby.stop();
+        }
+        if (money != null) {
+            money.stop();
         }
         if (players != null) {
             players.stop();       // saves playtime of everyone online, before the pool closes
@@ -177,6 +195,8 @@ public final class FlowCityCore extends JavaPlugin implements Listener {
         nearby.forget(p.getUniqueId());
         profiles.forget(p.getUniqueId());
         ranks.forget(p.getUniqueId());
+        hudConfig.forget(p.getUniqueId());
+        money.forget(p.getUniqueId());
     }
 
     // ------------------------------------------------------------------ helpers
@@ -217,8 +237,13 @@ public final class FlowCityCore extends JavaPlugin implements Listener {
         ranks.reload(newRanks);
         nametags.apply();
         nearby.reload();
+        YamlConfiguration hudYml = files.load("hud.yml");
+        hudSaveCooldownSeconds = Math.max(0, hudYml.getInt("hud.save-cooldown-seconds", 2));
+        money.configure(hudYml);
+        money.start();
         for (Player p : getServer().getOnlinePlayers()) {
             hud.push(p);
+            money.push(p, true);
         }
     }
 

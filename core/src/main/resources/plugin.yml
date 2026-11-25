@@ -63,3 +63,6 @@ permissions:
       flowcity.id.lookup: true
       flowcity.id.list: true
       flowcity.id.view: true
+  flowcity.hud.edit:
+    description: Save a personal HUD layout from the HUD editor
+    default: true
