@@ -1,0 +1,14 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven { url = 'https://maven.minecraftforge.net/' }
+    }
+}
+
+rootProject.name = 'FlowCityRP'
+
+// common  = FlowCityCommon (shared protocol + DTOs, pure Java 8)
+// core    = FlowCityCore   (Bukkit/Spigot 1.16.5 plugin for Arclight)
+// forge   = FlowCityForge  (Forge 36.2.39 mod, client + server)
+// voice   = FlowCityVoice  (Plasmo Voice 2.1.x addon) - added in Phase 8
+include 'common', 'core', 'forge'

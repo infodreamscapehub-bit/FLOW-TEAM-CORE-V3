@@ -1,0 +1,19 @@
+.gradle/
+build/
+out/
+bin/
+run/
+run-server/
+logs/
+*.iml
+*.ipr
+*.iws
+.idea/
+.vscode/
+.classpath
+.project
+.settings/
+# local test servers and secrets
+testserver/
+*.db
+database.local.yml

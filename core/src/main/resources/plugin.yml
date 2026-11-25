@@ -1,0 +1,19 @@
+name: FlowCityCore
+version: '${version}'
+main: com.flowcity.core.FlowCityCore
+api-version: '1.16'
+description: FLOWCITY ROLEPLAY core framework
+authors: [FlowCity Team]
+softdepend: [LuckPerms, Vault, Essentials, PlaceholderAPI]
+
+commands:
+  flowcity:
+    description: FlowCity technical status
+    usage: /<command> status
+    aliases: [fc]
+    permission: flowcity.admin.status
+
+permissions:
+  flowcity.admin.status:
+    description: View FlowCity technical status (database, protocol)
+    default: op

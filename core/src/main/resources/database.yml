@@ -1,0 +1,34 @@
+# FLOWCITY ROLEPLAY - database configuration
+# type: sqlite (single server, zero setup) or mysql (MySQL 5.7+/8.x or MariaDB 10.3+)
+
+config-version: 1
+
+type: sqlite
+
+sqlite:
+  # Relative to plugins/FlowCityCore/
+  file: flowcity.db
+
+mysql:
+  host: localhost
+  port: 3306
+  database: flowcity
+  username: flowcity
+  password: change-me
+  use-ssl: false
+  # Extra JDBC properties appended to the URL.
+  properties:
+    characterEncoding: utf8
+    serverTimezone: UTC
+
+pool:
+  # Ignored for SQLite (always 1 connection: SQLite allows one writer).
+  maximum-pool-size: 8
+  minimum-idle: 2
+  connection-timeout-ms: 10000
+  max-lifetime-ms: 1800000
+
+backup:
+  # SQLite only for now: copy of the database file before migrations run.
+  before-migrations: true
+  keep: 10

@@ -1,0 +1,18 @@
+plugins {
+    id 'java-library'
+}
+
+// Java 8 bytecode: Forge 1.16.5 and Arclight 1.16.5 both run Java 8-era mods/plugins.
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+// FlowCityCommon is compiled into core and forge directly (see their build.gradle),
+// so there is never a second copy of these classes on a different class loader.
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.3'
+}
+
+test {
+    useJUnitPlatform()
+}

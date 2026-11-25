@@ -1,0 +1,27 @@
+modLoader="javafml"
+loaderVersion="[36,)"
+license="All Rights Reserved"
+
+[[mods]]
+modId="flowcity"
+version="${version}"
+displayName="FlowCity Roleplay"
+authors="FlowCity Team"
+description='''
+FLOWCITY ROLEPLAY - client HUD, interfaces, items and the client side of the FlowCity protocol.
+Required on clients and on the Arclight server.
+'''
+
+[[dependencies.flowcity]]
+    modId="forge"
+    mandatory=true
+    versionRange="[36.2.39,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.flowcity]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.16.5,1.17)"
+    ordering="NONE"
+    side="BOTH"

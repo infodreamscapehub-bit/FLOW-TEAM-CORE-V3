@@ -1,0 +1,16 @@
+# FLOWCITY ROLEPLAY - FlowCityCore main configuration
+# Feature-specific settings live in their own files (database.yml, ids.yml, hud.yml, ...).
+
+config-version: 1
+
+# Extra logging for development. Keep false in production.
+debug: false
+
+protocol:
+  # Ticks to wait after a player joins before sending the FlowCity handshake
+  # (gives the client time to register its channels). 20 ticks = 1 second.
+  hello-delay-ticks: 40
+  # Ticks to wait for the client's answer before marking it "no FlowCity mod".
+  hello-timeout-ticks: 200
+  # Max client->server FlowCity packets per player per second; extra packets are dropped.
+  max-packets-per-second: 40

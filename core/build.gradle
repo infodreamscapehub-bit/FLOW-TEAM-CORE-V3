@@ -1,0 +1,67 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
+base {
+    archivesName = 'FlowCityCore-1.16.5'
+}
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+// FlowCityCommon sources are compiled into the plugin and relocated below.
+sourceSets.main.java.srcDir rootProject.file('common/src/main/java')
+
+repositories {
+    maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+    maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
+    maven { url = 'https://oss.sonatype.org/content/repositories/central' }
+}
+
+dependencies {
+    // Spigot API only (no Paper API): this is what Arclight 1.16.5 exposes.
+    compileOnly "org.spigotmc:spigot-api:${project.spigot_api_version}"
+
+    // Shaded + relocated so they can never clash with jars Arclight or other plugins ship.
+    implementation('com.zaxxer:HikariCP:4.0.3') {
+        exclude group: 'org.slf4j' // Arclight already provides slf4j
+    }
+    implementation('com.mysql:mysql-connector-j:8.0.33') {
+        exclude group: 'com.google.protobuf' // only needed for the X DevAPI, which we do not use
+    }
+    // SQLite JDBC is provided by the server (Arclight/Spigot bundle org.xerial:sqlite-jdbc).
+    compileOnly 'org.xerial:sqlite-jdbc:3.34.0'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.3'
+    testImplementation 'org.xerial:sqlite-jdbc:3.34.0'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+processResources {
+    inputs.property 'version', project.version
+    filesMatching('plugin.yml') {
+        expand 'version': project.version
+    }
+}
+
+shadowJar {
+    archiveClassifier.set('')
+    relocate 'com.zaxxer.hikari', 'com.flowcity.libs.hikari'
+    relocate 'com.mysql', 'com.flowcity.libs.mysql'
+    // Our own copy of FlowCityCommon gets a plugin-private package, so it can never be
+    // confused with the copy inside the FlowCityForge mod jar.
+    relocate 'com.flowcity.common', 'com.flowcity.core.libs.common'
+    mergeServiceFiles()
+    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA'
+}
+
+// Only the shaded jar is a valid plugin; the plain jar would miss HikariCP/MySQL.
+jar {
+    enabled = false
+}
+
+tasks.build.dependsOn shadowJar

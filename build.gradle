@@ -1,0 +1,14 @@
+// Root build: shared coordinates only. Each module configures its own plugins.
+allprojects {
+    group = 'com.flowcity'
+    version = '0.1.0'
+}
+
+subprojects {
+    repositories {
+        mavenCentral()
+    }
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+    }
+}
