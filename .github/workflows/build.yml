@@ -6,6 +6,11 @@ on:
     tags: [ 'v*' ]
   pull_request:
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Optional: publish a GitHub Release with this tag (e.g. v0.3.0) from the selected branch'
+        required: false
+        default: ''
 
 permissions:
   contents: write   # needed only for creating releases on v* tags
@@ -99,10 +104,25 @@ jobs:
           name: test-reports
           path: '**/build/reports/tests/'
 
+      # The jars are also packed into one zip: some download clients refuse bare .jar files.
+      - name: Pack zip
+        if: startsWith(github.ref, 'refs/tags/v') || inputs.release_tag != ''
+        env:
+          TAG: ${{ inputs.release_tag || github.ref_name }}
+        shell: bash
+        run: |
+          mkdir -p pack/plugins pack/mods
+          cp core/build/libs/FlowCityCore-*.jar pack/plugins/
+          cp forge/build/libs/FlowCityForge-*.jar pack/mods/
+          (cd pack && zip -r "../FlowCity-${TAG}.zip" plugins mods)
+
       - name: Release
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: startsWith(github.ref, 'refs/tags/v') || inputs.release_tag != ''
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ inputs.release_tag || github.ref_name }}
+          target_commitish: ${{ github.sha }}
           files: |
+            FlowCity-*.zip
             core/build/libs/FlowCityCore-*.jar
             forge/build/libs/FlowCityForge-*.jar

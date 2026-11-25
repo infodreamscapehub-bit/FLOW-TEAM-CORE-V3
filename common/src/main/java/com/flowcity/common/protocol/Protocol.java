@@ -14,7 +14,7 @@ package com.flowcity.common.protocol;
 public final class Protocol {
 
     /** Bump whenever any packet layout changes. Client and server must match exactly. */
-    public static final int VERSION = 2;
+    public static final int VERSION = 3;
 
     /** Plugin-messaging channel (namespace:path, lower case, valid on 1.13+). */
     public static final String CHANNEL_NAMESPACE = "flowcity";

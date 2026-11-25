@@ -1,9 +1,12 @@
 package com.flowcity.forge.client;
 
 import com.flowcity.common.protocol.packets.ProfileRequestPacket;
+import com.flowcity.forge.client.hud.HudRenderer;
+import com.flowcity.forge.client.screen.HudEditorScreen;
 import com.flowcity.forge.client.screen.IdSearchScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderNameplateEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -30,6 +33,7 @@ public final class ClientEvents {
         forge.addListener(ClientEvents::onNameplate);
         forge.addListener(ClientEvents::onRenderPlayer);
         forge.addListener(ClientEvents::onLoggedOut);
+        forge.addListener(ClientEvents::onOverlay);
 
         ClientNetwork.init();
     }
@@ -54,10 +58,21 @@ public final class ClientEvents {
                 mc.setScreen(new IdSearchScreen());
             }
         }
+        while (KeyBindings.HUD_EDITOR.consumeClick()) {
+            if (mc.screen == null) {
+                mc.setScreen(new HudEditorScreen());
+            }
+        }
         while (KeyBindings.PROFILE.consumeClick()) {
             if (mc.screen == null) {
                 ClientNetwork.send(new ProfileRequestPacket(0).encode());
             }
+        }
+    }
+
+    private static void onOverlay(RenderGameOverlayEvent.Post event) {
+        if (event.getType() == RenderGameOverlayEvent.ElementType.ALL) {
+            HudRenderer.onOverlay(event.getMatrixStack());
         }
     }
 

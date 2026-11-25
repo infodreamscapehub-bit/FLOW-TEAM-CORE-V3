@@ -1,0 +1,15 @@
+# FLOWCITY ROLEPLAY - HUD data sent to the client mod
+
+config-version: 1
+
+hud:
+  # How often (seconds) balances are re-read and pushed to players whose balance changed.
+  money-refresh-seconds: 5
+  # Minimum seconds between two HUD saves from the same player (anti-spam).
+  save-cooldown-seconds: 2
+
+currency:
+  # Shown in front of amounts on the HUD.
+  symbol: "$"
+  # 0 = whole dollars, 2 = cents.
+  decimals: 0

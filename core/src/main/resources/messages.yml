@@ -52,3 +52,9 @@ id:
     retired: "&cID-ul {id} a fost folosit inainte si nu mai poate fi refolosit (vezi ids.yml: allow-reuse)."
     same: "&cJucatorul are deja ID-ul {id}."
     exhausted: "&cNu mai exista ID-uri libere (ids.yml: max-id)."
+
+hud:
+  no-permission: "&cNu ai voie sa-ti modifici HUD-ul."
+  save-failed: "&cHUD-ul nu a putut fi salvat. Incearca din nou."
+  invalid: "&cLayout HUD invalid, nu a fost salvat."
+  cooldown: "&cAsteapta putin inainte sa salvezi din nou HUD-ul."
