@@ -6,7 +6,9 @@ import com.flowcity.common.protocol.Protocol;
 import com.flowcity.common.protocol.ProtocolException;
 import com.flowcity.common.protocol.packets.HelloAckPacket;
 import com.flowcity.common.protocol.packets.HelloPacket;
+import com.flowcity.common.protocol.packets.HudConfigPacket;
 import com.flowcity.common.protocol.packets.IdVisibilityPacket;
+import com.flowcity.common.protocol.packets.MoneyStatePacket;
 import com.flowcity.common.protocol.packets.NearbyIdsPacket;
 import com.flowcity.common.protocol.packets.PlayerStatePacket;
 import com.flowcity.common.protocol.packets.ProfilePacket;
@@ -82,6 +84,12 @@ public final class ClientNetwork {
                     break;
                 case PacketIds.CB_PLAYER_STATE:
                     ClientState.setSelf(PlayerStatePacket.decode(reader));
+                    break;
+                case PacketIds.CB_MONEY_STATE:
+                    ClientState.setMoney(MoneyStatePacket.decode(reader));
+                    break;
+                case PacketIds.CB_HUD_CONFIG:
+                    ClientState.setHudConfig(HudConfigPacket.decode(reader));
                     break;
                 case PacketIds.CB_PROFILE: {
                     ProfilePacket profile = ProfilePacket.decode(reader);

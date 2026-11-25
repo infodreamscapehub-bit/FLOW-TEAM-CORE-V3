@@ -10,6 +10,10 @@ public final class ClientConfig {
     public static final ForgeConfigSpec.IntValue ID_FADE_MILLIS;
     public static final ForgeConfigSpec.DoubleValue ID_SCALE;
     public static final ForgeConfigSpec.BooleanValue HIDE_VANILLA_NAMETAGS;
+    public static final ForgeConfigSpec.BooleanValue HUD_ENABLED;
+    public static final ForgeConfigSpec.ConfigValue<String> THEME_ACCENT;
+    public static final ForgeConfigSpec.ConfigValue<String> THEME_ACCENT_2;
+    public static final ForgeConfigSpec.ConfigValue<String> THEME_PANEL;
 
     static {
         ForgeConfigSpec.Builder b = new ForgeConfigSpec.Builder();
@@ -22,6 +26,18 @@ public final class ClientConfig {
                 .defineInRange("scale", 1.0, 0.5, 3.0);
         HIDE_VANILLA_NAMETAGS = b.comment("Hide vanilla player name tags (Minecraft usernames).")
                 .define("hideVanillaNametags", true);
+        b.pop();
+        b.push("hud");
+        HUD_ENABLED = b.comment("Draw the FlowCity HUD. Layout and colours are changed in the HUD editor.")
+                .define("enabled", true);
+        b.pop();
+        b.push("theme");
+        THEME_ACCENT = b.comment("Main accent colour of all FlowCity interfaces (#RRGGBB).")
+                .define("accent", "#FF8C00");
+        THEME_ACCENT_2 = b.comment("Second accent colour (#RRGGBB), used for IDs.")
+                .define("accent2", "#FFC400");
+        THEME_PANEL = b.comment("Panel background colour (#RRGGBB).")
+                .define("panel", "#121212");
         b.pop();
         SPEC = b.build();
     }

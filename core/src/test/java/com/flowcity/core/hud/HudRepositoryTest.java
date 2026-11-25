@@ -85,9 +85,9 @@ class HudRepositoryTest {
 
     @Test
     void presetNamesAreCleaned() {
-        assertEquals("Preset 3", HudConfigService.cleanName("", 3));
-        assertEquals("Preset 1", HudConfigService.cleanName("\u00a7\u00a7<>", 1));
-        assertEquals("My HUD 2", HudConfigService.cleanName(" My HUD 2 ", 1));
-        assertEquals(16, HudConfigService.cleanName("abcdefghijklmnopqrstuvwxyz", 1).length());
+        assertEquals("Preset 3", HudNames.clean("", 3));
+        assertEquals("Preset 1", HudNames.clean("\u00a7\u00a7<>", 1));
+        assertEquals("My HUD 2", HudNames.clean(" My HUD 2 ", 1));
+        assertEquals(16, HudNames.clean("abcdefghijklmnopqrstuvwxyz", 1).length());
     }
 }

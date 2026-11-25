@@ -5,7 +5,7 @@ package com.flowcity.common.hud;
  * Width/height are the unscaled box size in GUI pixels.
  */
 public enum HudElement {
-    LOGO("logo", 70, 70),
+    LOGO("logo", 70, 82),
     ID("id", 46, 16),
     NAME("name", 96, 16),
     RANK("rank", 70, 16),

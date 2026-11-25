@@ -18,6 +18,9 @@ public final class KeyBindings {
     public static final KeyBinding PROFILE = new KeyBinding("key.flowcity.profile",
             KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM, GLFW.GLFW_KEY_F7, CATEGORY);
 
+    public static final KeyBinding HUD_EDITOR = new KeyBinding("key.flowcity.hud_editor",
+            KeyConflictContext.IN_GAME, InputMappings.Type.KEYSYM, GLFW.GLFW_KEY_H, CATEGORY);
+
     private KeyBindings() {
     }
 
@@ -25,5 +28,6 @@ public final class KeyBindings {
         ClientRegistry.registerKeyBinding(SHOW_IDS);
         ClientRegistry.registerKeyBinding(ID_SEARCH);
         ClientRegistry.registerKeyBinding(PROFILE);
+        ClientRegistry.registerKeyBinding(HUD_EDITOR);
     }
 }

@@ -86,7 +86,7 @@ public final class HudConfigService {
             return;
         }
         lastSave.put(player.getUniqueId(), now);
-        final String name = cleanName(packet.name, packet.slot);
+        final String name = HudNames.clean(packet.name, packet.slot);
         final UUID uuid = player.getUniqueId();
         final int slot = packet.slot;
         Tasks.thenSync(plugin, db.transaction(c -> {
@@ -98,19 +98,5 @@ public final class HudConfigService {
                 connections.send(online, new HudConfigPacket(loaded.activeSlot, loaded.presets).encode());
             }
         });
-    }
-
-    /** Printable ASCII letters/digits/space/-/_ only, at most 16 characters. */
-    static String cleanName(String raw, int slot) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < raw.length() && sb.length() < 16; i++) {
-            char ch = raw.charAt(i);
-            if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '9')
-                    || ch == ' ' || ch == '-' || ch == '_') {
-                sb.append(ch);
-            }
-        }
-        String name = sb.toString().trim();
-        return name.isEmpty() ? "Preset " + slot : name;
     }
 }
