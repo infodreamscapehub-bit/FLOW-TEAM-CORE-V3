@@ -45,6 +45,13 @@ jobs:
             classes=$(unzip -l "$f" | grep -c '\.class$')
             echo "::notice title=Built $(basename "$f")::$(stat -c %s "$f") bytes, $classes classes, mods.toml=$(unzip -l "$f" | grep -c 'META-INF/mods.toml'), plugin.yml=$(unzip -l "$f" | grep -c ' plugin.yml$')"
           done
+          core=$(ls core/build/libs/FlowCityCore-*.jar | head -n 1)
+          if ! unzip -l "$core" | grep -q 'com/flowcity/libs/slf4j/LoggerFactory.class'; then
+            echo "::error title=slf4j missing::FlowCityCore does not bundle relocated slf4j"; ok=0
+          fi
+          if unzip -l "$core" | grep -q ' org/slf4j/'; then
+            echo "::error title=slf4j not relocated::FlowCityCore contains org/slf4j classes"; ok=0
+          fi
           [ "$ok" = 1 ]
 
       - name: Jar summary

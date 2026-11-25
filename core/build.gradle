@@ -24,9 +24,11 @@ dependencies {
     compileOnly "org.spigotmc:spigot-api:${project.spigot_api_version}"
 
     // Shaded + relocated so they can never clash with jars Arclight or other plugins ship.
-    implementation('com.zaxxer:HikariCP:4.0.3') {
-        exclude group: 'org.slf4j' // Arclight already provides slf4j
-    }
+    implementation 'com.zaxxer:HikariCP:4.0.3'
+    // HikariCP needs slf4j. Spigot/Paper 1.16.5 do not ship it, so we bundle our own (relocated)
+    // and route it to java.util.logging, i.e. into the normal server log.
+    implementation 'org.slf4j:slf4j-api:1.7.36'
+    implementation 'org.slf4j:slf4j-jdk14:1.7.36'
     implementation('com.mysql:mysql-connector-j:8.0.33') {
         exclude group: 'com.google.protobuf' // only needed for the X DevAPI, which we do not use
     }
@@ -35,9 +37,6 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.3'
     testImplementation 'org.xerial:sqlite-jdbc:3.34.0'
-    // HikariCP needs slf4j. Arclight provides it at runtime; tests need their own copy.
-    testRuntimeOnly 'org.slf4j:slf4j-api:1.7.36'
-    testRuntimeOnly 'org.slf4j:slf4j-nop:1.7.36'
 }
 
 test {
@@ -59,6 +58,7 @@ shadowJar {
     archiveClassifier.set('')
     relocate 'com.zaxxer.hikari', 'com.flowcity.libs.hikari'
     relocate 'com.mysql', 'com.flowcity.libs.mysql'
+    relocate 'org.slf4j', 'com.flowcity.libs.slf4j'
     // Our own copy of FlowCityCommon gets a plugin-private package, so it can never be
     // confused with the copy inside the FlowCityForge mod jar.
     relocate 'com.flowcity.common', 'com.flowcity.core.libs.common'
