@@ -46,29 +46,15 @@ jobs:
             echo "::notice title=Built $(basename "$f")::$(stat -c %s "$f") bytes, $classes classes, mods.toml=$(unzip -l "$f" | grep -c 'META-INF/mods.toml'), plugin.yml=$(unzip -l "$f" | grep -c ' plugin.yml$')"
           done
           core=$(ls core/build/libs/FlowCityCore-*.jar | head -n 1)
-          if ! unzip -l "$core" | grep -q 'com/flowcity/libs/slf4j/LoggerFactory.class'; then
+          listing=$(unzip -l "$core")
+          if ! grep -q "com/flowcity/libs/slf4j/LoggerFactory.class" <<<"$listing"; then
             echo "::error title=slf4j missing::FlowCityCore does not bundle relocated slf4j"; ok=0
           fi
-          if unzip -l "$core" | grep -q ' org/slf4j/'; then
+          if grep -q " org/slf4j/" <<<"$listing"; then
             echo "::error title=slf4j not relocated::FlowCityCore contains org/slf4j classes"; ok=0
           fi
           [ "$ok" = 1 ]
 
-      - name: Jar summary
-        shell: bash
-        run: |
-          {
-            echo '## Built jars'
-            echo '```'
-            ls -l core/build/libs forge/build/libs
-            for j in forge/build/libs/FlowCityForge-*.jar core/build/libs/FlowCityCore-*.jar; do
-              echo "--- $j"
-              unzip -l "$j" | grep -E 'flowcity/(forge|core)/|mods.toml|plugin.yml|libs/(hikari|mysql)/[^/]*/$' | head -n 40
-            done
-            echo '```'
-          } >> "$GITHUB_STEP_SUMMARY"
-
-      # Logs need a GitHub login; the run summary is visible on the run page itself.
       # Annotations are public on the run page (logs need a GitHub login).
       - name: Failure annotations
         if: failure()
