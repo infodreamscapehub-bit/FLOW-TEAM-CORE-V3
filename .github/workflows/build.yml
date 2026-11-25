@@ -32,6 +32,20 @@ jobs:
           set -o pipefail
           gradle build --continue 2>&1 | tee build.log
 
+      - name: Jar summary
+        shell: bash
+        run: |
+          {
+            echo '## Built jars'
+            echo '```'
+            ls -l core/build/libs forge/build/libs
+            for j in forge/build/libs/FlowCityForge-*.jar core/build/libs/FlowCityCore-*.jar; do
+              echo "--- $j"
+              unzip -l "$j" | grep -E 'flowcity/(forge|core)/|mods.toml|plugin.yml|libs/(hikari|mysql)/[^/]*/$' | head -n 40
+            done
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
       # Logs need a GitHub login; the run summary is visible on the run page itself.
       - name: Failure summary
         if: failure()
